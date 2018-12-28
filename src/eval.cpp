@@ -515,6 +515,8 @@ int Eval::evaluate(Board &b) {
         // Idea of using blocked pawns from Stockfish
         uint64_t mobilitySafeSqs = ~(pieceRammedPawns[color] | pieces[color][KINGS] | ei.attackMaps[color^1][PAWNS]
                                    | (ei.doubleAttackMaps[color^1] & ~ei.doubleAttackMaps[color]));
+        uint64_t immobilitySqs = pieceRammedPawns[color] | pieces[color][KINGS]
+                               | (pieces[color^1][PAWNS] & ei.attackMaps[color^1][PAWNS]);
 
         //--------------------------------Knights-----------------------------------
         for (unsigned int i = 0; i < pml.starts[BISHOPS]; i++) {
@@ -548,9 +550,14 @@ int Eval::evaluate(Board &b) {
             uint64_t mobilityMap = pml.get(i).legal & mobilitySafeSqs;
 
             psqtScores[color] += PSQT[color][BISHOPS][bishopSq];
-            mobilityScore[color] += MOBILITY[BISHOPS-1][count(mobilityMap)]
+            int mobilityCt = count(mobilityMap);
+            mobilityScore[color] += MOBILITY[BISHOPS-1][mobilityCt]
                                  + EXTENDED_CENTER_VAL * count(mobilityMap & EXTENDED_CENTER_SQS)
                                  + CENTER_BONUS * count(mobilityMap & CENTER_SQS);
+            if (mobilityCt <= 3) {
+                if ((pml.get(i).legal & occ) == (immobilitySqs & occ))
+                    mobilityScore[color] += IMMOBILITY_PENALTY[BISHOPS-2][mobilityCt];
+            }
 
             if (bit & ~pawnStopAtt[color^1] & OUTPOST_SQS[color]) {
                 pieceEvalScore[color] += BISHOP_OUTPOST_BONUS;
@@ -578,9 +585,14 @@ int Eval::evaluate(Board &b) {
             uint64_t mobilityMap = pml.get(i).legal & mobilitySafeSqs;
 
             psqtScores[color] += PSQT[color][ROOKS][rookSq];
-            mobilityScore[color] += MOBILITY[ROOKS-1][count(mobilityMap)]
+            int mobilityCt = count(mobilityMap);
+            mobilityScore[color] += MOBILITY[ROOKS-1][mobilityCt]
                                  + EXTENDED_CENTER_VAL * count(mobilityMap & EXTENDED_CENTER_SQS)
                                  + CENTER_BONUS * count(mobilityMap & CENTER_SQS);
+            if (mobilityCt <= 3) {
+                if ((pml.get(i).legal & occ) == ((immobilitySqs | (pieces[color][PAWNS] & FILES[file])) & occ))
+                    mobilityScore[color] += IMMOBILITY_PENALTY[ROOKS-2][mobilityCt];
+            }
 
             // Bonus for having rooks on open or semiopen files
             if (FILES[file] & ei.openFiles)
