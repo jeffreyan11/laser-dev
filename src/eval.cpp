@@ -150,6 +150,9 @@ EvalDebug evalDebugStats;
 } // namespace
 
 
+// From bbinit.cpp
+extern uint64_t inBetweenSqs[64][64];
+
 void initEvalTables() {
     #define E(mg, eg) ((Score) ((((int32_t) eg) << 16) + ((int32_t) mg)))
     for (int pieceType = PAWNS; pieceType <= KINGS; pieceType++) {
@@ -590,7 +593,9 @@ int Eval::evaluate(Board &b) {
                                  + EXTENDED_CENTER_VAL * count(mobilityMap & EXTENDED_CENTER_SQS)
                                  + CENTER_BONUS * count(mobilityMap & CENTER_SQS);
             if (mobilityCt <= 3) {
-                if ((pml.get(i).legal & occ) == ((immobilitySqs | (pieces[color][PAWNS] & FILES[file])) & occ))
+                uint64_t rookImmobility = immobilitySqs | (pieces[color][PAWNS] & FILES[file])
+                                                        | (allPieces[color] & inBetweenSqs[kingSq[color]][rookSq]);
+                if ((pml.get(i).legal & occ) == (rookImmobility & occ))
                     mobilityScore[color] += IMMOBILITY_PENALTY[ROOKS-2][mobilityCt];
             }
 
