@@ -30,11 +30,12 @@ namespace {
 
 constexpr uint64_t KING_ZONE_DEFENDER[2] = {HALF[WHITE] | RANK_5, RANK_4 | HALF[BLACK]};
 constexpr uint64_t KING_ZONE_FLANK[8] = {
-    QSIDE, QSIDE, QSIDE, CENTER_FILES, CENTER_FILES, KSIDE, KSIDE, KSIDE
+    QSIDE ^ FILE_D, QSIDE, QSIDE, CENTER_FILES, CENTER_FILES, KSIDE, KSIDE, KSIDE ^ FILE_E
 };
 constexpr uint64_t KING_DEFENSE_ZONE[8] = {
-    QSIDE ^ FILE_D, QSIDE ^ FILE_D, QSIDE ^ FILE_D, FILE_D | FILE_E,
-    FILE_D | FILE_E, KSIDE ^ FILE_E, KSIDE ^ FILE_E, KSIDE ^ FILE_E
+    QSIDE ^ FILE_D, QSIDE ^ FILE_D, FILE_A ^ QSIDE,
+    FILE_C | FILE_D | FILE_E, FILE_D | FILE_E | FILE_F,
+    FILE_H ^ KSIDE, KSIDE ^ FILE_E, KSIDE ^ FILE_E
 };
 
 Score PSQT[2][6][64];
@@ -1137,7 +1138,7 @@ int Eval::getKingSafety(Board &b, PieceMoveList &attackers, uint64_t kingSqs, in
         int c = count(diagonal);
         return KS_BISHOP_PRESSURE * (c * (c+1) / 2 - 1);
     };
-    if (kingFile < 3) {
+    if (kingFile < 4) {
         if (attackingColor == WHITE) {
             if (uint64_t diagonal = ((pieces[WHITE][PAWNS] & QSIDE_DIAG_REGION[0]) << 7) & pieces[WHITE][PAWNS])
                 kingSafetyPts += attackerBishopFactor(WHITE, kingDefenseZone, diagonal);
@@ -1151,7 +1152,7 @@ int Eval::getKingSafety(Board &b, PieceMoveList &attackers, uint64_t kingSqs, in
                 kingSafetyPts += defenderBishopFactor(diagonal);
         }
     }
-    else if (kingFile > 4) {
+    else {
         if (attackingColor == WHITE) {
             if (uint64_t diagonal = ((pieces[WHITE][PAWNS] & KSIDE_DIAG_REGION[0]) << 9) & pieces[WHITE][PAWNS])
                 kingSafetyPts += attackerBishopFactor(WHITE, kingDefenseZone, diagonal);
