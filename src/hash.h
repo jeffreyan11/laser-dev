@@ -28,48 +28,44 @@ constexpr uint8_t ALL_NODE = 2;
 constexpr uint8_t NO_NODE_INFO = 3;
 
 
-// Pack the information stored in a hash entry into a single 64-bit integer
-uint64_t packHashData(int depth, Move m, int score, uint8_t nodeType, uint8_t age);
+// Struct storing all search information.
+// Size: 8 bytes
+struct HashData {
+    int16_t score;
+    Move move;
+    uint8_t nodeType;
+    uint8_t age;
+    int8_t depth;
+    int8_t _pad;
 
-// Functions for unpacking hash data
-inline int getHashDepth(uint64_t data) {
-    return (int8_t) ((data >> 48) & 0xFF);
-}
+    HashData() { score = move = nodeType = age = depth = _pad = 0; }
+    HashData(int _depth, Move _move, int _score, uint8_t _nodeType, uint8_t _age) {
+        score = (int16_t) _score;
+        move = _move;
+        nodeType = _nodeType;
+        age = _age;
+        depth = (int8_t) _depth;
+    }
+};
 
-inline Move getHashMove(uint64_t data) {
-    return (data >> 16) & 0xFFFF;
-}
-
-inline int getHashScore(uint64_t data) {
-    return (int16_t) (data & 0xFFFF);
-}
-
-inline uint8_t getHashAge(uint64_t data) {
-    return (data >> 40) & 0xFF;
-}
-
-inline uint8_t getHashNodeType(uint64_t data) {
-    return (data >> 32) & 0x3;
-}
-
-// Struct storing hashed search information.
+// Struct storing hashed search information and corresponding hash key.
 // Size: 16 bytes
 struct HashEntry {
     uint64_t zobristKey;
-    uint64_t data;
+    HashData data;
 
     HashEntry() {
         clearEntry();
     }
 
-    void setEntry(Board &b, uint64_t _data) {
+    void setEntry(Board &b, HashData _data) {
         zobristKey = b.getZobristKey();
         data = _data;
     }
 
     void clearEntry() {
         zobristKey = 0;
-        data = 0;
+        data = HashData();
     }
 
     ~HashEntry() {}
@@ -99,8 +95,8 @@ public:
     Hash& operator=(const Hash &other) = delete;
     ~Hash();
 
-    void add(Board &b, uint64_t data, int depth);
-    uint64_t get(Board &b);
+    void add(Board &b, HashData data, int depth);
+    HashData *get(Board &b);
 
     uint64_t getSize();
     void setSize(uint64_t MB);
