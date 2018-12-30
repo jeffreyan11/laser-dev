@@ -1109,6 +1109,8 @@ int Eval::getKingSafety(Board &b, PieceMoveList &attackers, uint64_t kingSqs, in
     const uint64_t kingZone = KING_ZONE_DEFENDER[attackingColor^1] & KING_ZONE_FLANK[kingFile];
     int kingPressure = KING_PRESSURE * (count(ei.fullAttackMaps[attackingColor] & kingZone)
                                       + count(ei.doubleAttackMaps[attackingColor] & ~ei.attackMaps[attackingColor^1][PAWNS] & kingZone));
+    // Additional bonus if the opposing king has few defenders
+    kingSafetyPts += KING_DEFENSELESS_ZONE * count(kingZone & weakMap);
 
     // Adjust based on pawn shield, storms, and king pressure
     kingSafetyPts += (-KS_PAWN_FACTOR * pawnScore + KS_KING_PRESSURE_FACTOR * kingPressure) / 32;

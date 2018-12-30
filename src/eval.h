@@ -347,6 +347,7 @@ constexpr int KS_ARRAY_FACTOR = 128;
 constexpr int KING_THREAT_MULTIPLIER[4] = {8, 5, 7, 3};
 constexpr int KING_THREAT_SQUARE[4] = {8, 10, 7, 10};
 constexpr int KING_DEFENSELESS_SQUARE = 24;
+constexpr int KING_DEFENSELESS_ZONE = 3;
 constexpr int KS_PAWN_FACTOR = 10;
 constexpr int KING_PRESSURE = 3;
 constexpr int KS_KING_PRESSURE_FACTOR = 24;
@@ -354,7 +355,7 @@ constexpr int KS_NO_KNIGHT_DEFENDER = 15;
 constexpr int KS_NO_BISHOP_DEFENDER = 15;
 constexpr int KS_BISHOP_PRESSURE = 8;
 constexpr int KS_NO_QUEEN = -44;
-constexpr int KS_BASE = -18;
+constexpr int KS_BASE = -38;
 constexpr int SAFE_CHECK_BONUS[4] = {56, 25, 65, 53};
 
 // Minor pieces
