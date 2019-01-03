@@ -93,7 +93,7 @@ void Hash::init(uint64_t MB) {
     size >>= 1;
 
     table = (HashNode *) calloc(size,  sizeof(HashNode));
-    age = 0;
+    clear();
 }
 
 void Hash::incrementAge() {

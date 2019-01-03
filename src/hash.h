@@ -38,7 +38,7 @@ struct HashData {
     int8_t depth;
     int8_t _pad;
 
-    HashData() { score = move = nodeType = age = depth = _pad = 0; }
+    HashData() = default;
     HashData(int _depth, Move _move, int _score, uint8_t _nodeType, uint8_t _age) {
         score = (int16_t) _score;
         move = _move;
@@ -54,21 +54,13 @@ struct HashEntry {
     uint64_t zobristKey;
     HashData data;
 
-    HashEntry() {
-        clearEntry();
-    }
+    HashEntry() { zobristKey = 0; }
+    ~HashEntry() = default;
 
     void setEntry(Board &b, HashData _data) {
         zobristKey = b.getZobristKey();
         data = _data;
     }
-
-    void clearEntry() {
-        zobristKey = 0;
-        data = HashData();
-    }
-
-    ~HashEntry() {}
 };
 
 // This contains each of the hash table entries, in a two-bucket system.
