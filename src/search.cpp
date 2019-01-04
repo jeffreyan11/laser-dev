@@ -809,7 +809,7 @@ int PVS(Board &b, int depth, int alpha, int beta, int threadID, bool isCutNode, 
     // probably wouldn't have let us get here (a form of the null-move observation
     // adapted to low depths, also called static null move pruning)
     if (!isPVNode && !isInCheck
-     && depth <= 6
+     && depth <= 5
      && staticEval - 70 * depth >= beta
      && b.getNonPawnMaterial(color))
         return staticEval;
@@ -935,7 +935,7 @@ int PVS(Board &b, int depth, int alpha, int beta, int threadID, bool isCutNode, 
         // q-searching it.
         if (moveIsPrunable
          && !isInCheck
-         && pruneDepth <= 6 && staticEval <= alpha - 115 - 90 * pruneDepth)
+         && pruneDepth <= 5 && staticEval <= alpha - 115 - 90 * pruneDepth)
             continue;
 
 
@@ -960,7 +960,7 @@ int PVS(Board &b, int depth, int alpha, int beta, int threadID, bool isCutNode, 
 
         // Futility pruning using SEE
         if (moveIsPrunable
-         && pruneDepth <= 6
+         && pruneDepth <= 5
          && !b.isSEEAbove(color, m, -24 * pruneDepth * pruneDepth))
             continue;
 
