@@ -821,15 +821,9 @@ int PVS(Board &b, int depth, int alpha, int beta, int threadID, bool isCutNode, 
     // the material and trust its result since a quiet move probably can't gain
     // as much.
     if (!isPVNode && !isInCheck
-     && depth <= 2 && staticEval <= alpha - RAZOR_MARGIN) {
+     && depth == 1 && staticEval <= alpha - RAZOR_MARGIN) {
         searchParams->ply = ssi->ply;
-        if (depth == 1)
-            return quiescence(b, 0, alpha, beta, threadID);
-
-        int rWindow = alpha - RAZOR_MARGIN;
-        int value = quiescence(b, 0, rWindow, rWindow+1, threadID);
-        if (value <= rWindow)
-            return value;
+        return quiescence(b, 0, alpha, beta, threadID);
     }
 
 
