@@ -1115,11 +1115,11 @@ int Eval::getKingSafety(Board &b, PieceMoveList &attackers, uint64_t kingSqs, in
 
     // Bonus for the attacker if the defender has no defending minors
     const uint64_t kingDefenseZone = KING_DEFENSE_ZONE[kingFile] & HALF[attackingColor^1];
-    kingSafetyPts += KS_NO_KNIGHT_DEFENDER
+    kingSafetyPts += KS_NO_MINOR_DEFENDER
                    * (!(kingDefenseZone & ei.attackMaps[attackingColor^1][KNIGHTS])
                     + !(kingZone & ei.attackMaps[attackingColor^1][KNIGHTS]))
                    * pieceCounts[attackingColor^1][KNIGHTS];
-    kingSafetyPts += KS_NO_BISHOP_DEFENDER
+    kingSafetyPts += KS_NO_MINOR_DEFENDER
                    * (!(kingDefenseZone & ei.attackMaps[attackingColor^1][BISHOPS])
                     + !(kingZone & ei.attackMaps[attackingColor^1][BISHOPS]))
                    * pieceCounts[attackingColor^1][BISHOPS];
@@ -1129,40 +1129,36 @@ int Eval::getKingSafety(Board &b, PieceMoveList &attackers, uint64_t kingSqs, in
                                                FILE_F | FILE_E | FILE_D};
     constexpr uint64_t KSIDE_DIAG_REGION[2] = {FILE_C | ((FILE_D | FILE_E) & (RANK_3 | RANK_4 | RANK_5 | RANK_6)),
                                                FILE_C | FILE_D | FILE_E};
-    auto attackerBishopFactor = [this](int color, uint64_t diagonalZone, uint64_t diagonal) -> int {
-        int c = count(diagonal);
-        return KS_BISHOP_PRESSURE * (c * (c+1) / 2 + !!(diagonalZone & ei.attackMaps[color][BISHOPS]) - 1);
-    };
-    auto defenderBishopFactor = [this](uint64_t diagonal) -> int {
+    auto bishopFactor = [](uint64_t diagonal) -> int {
         int c = count(diagonal);
         return KS_BISHOP_PRESSURE * (c * (c+1) / 2 - 1);
     };
     if (kingFile < 3) {
         if (attackingColor == WHITE) {
             if (uint64_t diagonal = ((pieces[WHITE][PAWNS] & QSIDE_DIAG_REGION[0]) << 7) & pieces[WHITE][PAWNS])
-                kingSafetyPts += attackerBishopFactor(WHITE, kingDefenseZone, diagonal);
+                kingSafetyPts += bishopFactor(diagonal);
             if (uint64_t diagonal = ((pieces[BLACK][PAWNS] & KSIDE_DIAG_REGION[1]) >> 7) & pieces[BLACK][PAWNS])
-                kingSafetyPts += defenderBishopFactor(diagonal);
+                kingSafetyPts += bishopFactor(diagonal);
         }
         else {
             if (uint64_t diagonal = ((pieces[BLACK][PAWNS] & QSIDE_DIAG_REGION[0]) >> 9) & pieces[BLACK][PAWNS])
-                kingSafetyPts += attackerBishopFactor(BLACK, kingDefenseZone, diagonal);
+                kingSafetyPts += bishopFactor(diagonal);
             if (uint64_t diagonal = ((pieces[WHITE][PAWNS] & KSIDE_DIAG_REGION[1]) << 9) & pieces[WHITE][PAWNS])
-                kingSafetyPts += defenderBishopFactor(diagonal);
+                kingSafetyPts += bishopFactor(diagonal);
         }
     }
     else if (kingFile > 4) {
         if (attackingColor == WHITE) {
             if (uint64_t diagonal = ((pieces[WHITE][PAWNS] & KSIDE_DIAG_REGION[0]) << 9) & pieces[WHITE][PAWNS])
-                kingSafetyPts += attackerBishopFactor(WHITE, kingDefenseZone, diagonal);
+                kingSafetyPts += bishopFactor(diagonal);
             if (uint64_t diagonal = ((pieces[BLACK][PAWNS] & QSIDE_DIAG_REGION[1]) >> 9) & pieces[BLACK][PAWNS])
-                kingSafetyPts += defenderBishopFactor(diagonal);
+                kingSafetyPts += bishopFactor(diagonal);
         }
         else {
             if (uint64_t diagonal = ((pieces[BLACK][PAWNS] & KSIDE_DIAG_REGION[0]) >> 7) & pieces[BLACK][PAWNS])
-                kingSafetyPts += attackerBishopFactor(BLACK, kingDefenseZone, diagonal);
+                kingSafetyPts += bishopFactor(diagonal);
             if (uint64_t diagonal = ((pieces[WHITE][PAWNS] & QSIDE_DIAG_REGION[1]) << 7) & pieces[WHITE][PAWNS])
-                kingSafetyPts += defenderBishopFactor(diagonal);
+                kingSafetyPts += bishopFactor(diagonal);
         }
     }
 
