@@ -1007,7 +1007,7 @@ int PVS(Board &b, int depth, int alpha, int beta, int threadID, bool isCutNode, 
             int historyValue = searchParams->historyTable[color][pieceID][endSq]
                 + ((ssi->counterMoveHistory != nullptr) ? ssi->counterMoveHistory[pieceID][endSq] : 0)
                 + ((ssi->followupMoveHistory != nullptr) ? ssi->followupMoveHistory[pieceID][endSq] : 0);
-            reduction -= historyValue / 512;
+            reduction -= historyValue / 256;
             // Reduce more for expected cut nodes
             if (isCutNode)
                 reduction++;
