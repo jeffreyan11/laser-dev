@@ -316,12 +316,18 @@ int Eval::evaluate(Board &b) {
         evalDebugStats.totalImbalanceEg = imbalanceValue[EG];
     }
 
-    // Increase knight value in closed positions
-    int numRammedPawns = count(ei.rammedPawns[WHITE]);
-    valueMg += KNIGHT_CLOSED_BONUS[MG] * pieceCounts[WHITE][KNIGHTS] * numRammedPawns * numRammedPawns / 4;
-    valueEg += KNIGHT_CLOSED_BONUS[EG] * pieceCounts[WHITE][KNIGHTS] * numRammedPawns * numRammedPawns / 4;
-    valueMg -= KNIGHT_CLOSED_BONUS[MG] * pieceCounts[BLACK][KNIGHTS] * numRammedPawns * numRammedPawns / 4;
-    valueEg -= KNIGHT_CLOSED_BONUS[EG] * pieceCounts[BLACK][KNIGHTS] * numRammedPawns * numRammedPawns / 4;
+    // Adjust value of minors in closed positions
+    int closedFactor = 2 * count(ei.rammedPawns[WHITE] & CENTER_FILES)
+                     +     count(ei.rammedPawns[WHITE] & (FILE_B | FILE_G));
+    closedFactor *= closedFactor;
+    valueMg += KNIGHT_CLOSED_FACTOR[MG] * pieceCounts[WHITE][KNIGHTS] * closedFactor / 16;
+    valueEg += KNIGHT_CLOSED_FACTOR[EG] * pieceCounts[WHITE][KNIGHTS] * closedFactor / 16;
+    valueMg -= KNIGHT_CLOSED_FACTOR[MG] * pieceCounts[BLACK][KNIGHTS] * closedFactor / 16;
+    valueEg -= KNIGHT_CLOSED_FACTOR[EG] * pieceCounts[BLACK][KNIGHTS] * closedFactor / 16;
+    valueMg += BISHOP_CLOSED_FACTOR[MG] * pieceCounts[WHITE][BISHOPS] * closedFactor / 16;
+    valueEg += BISHOP_CLOSED_FACTOR[EG] * pieceCounts[WHITE][BISHOPS] * closedFactor / 16;
+    valueMg -= BISHOP_CLOSED_FACTOR[MG] * pieceCounts[BLACK][BISHOPS] * closedFactor / 16;
+    valueEg -= BISHOP_CLOSED_FACTOR[EG] * pieceCounts[BLACK][BISHOPS] * closedFactor / 16;
 
 
     //----------------------------Positional terms------------------------------

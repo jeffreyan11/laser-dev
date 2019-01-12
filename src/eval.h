@@ -94,8 +94,8 @@ constexpr int EG = 1;
 
 // Material constants
 constexpr int PIECE_VALUES[2][5] = {
-    {100, 408, 447, 695, 1351},
-    {135, 398, 453, 745, 1447}
+    {100, 413, 450, 695, 1351},
+    {135, 400, 454, 745, 1447}
 };
 constexpr int KNOWN_WIN = PIECE_VALUES[EG][PAWNS] * 75;
 constexpr int TB_WIN = PIECE_VALUES[EG][PAWNS] * 125;
@@ -254,8 +254,9 @@ constexpr int OWN_OPP_IMBALANCE[2][5][5] = {
 }
 };
 
-// Bonus for knight in closed positions
-constexpr int KNIGHT_CLOSED_BONUS[2] = {2, 8};
+// Adjust value of minors in closed positions
+constexpr int KNIGHT_CLOSED_FACTOR[2] = {4, 11};
+constexpr int BISHOP_CLOSED_FACTOR[2] = {-3, -5};
 
 //------------------------Positional eval constants-----------------------------
 // SPACE_BONUS[0][0] = behind own pawn, not center files
