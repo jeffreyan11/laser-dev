@@ -102,7 +102,7 @@ int lmrReductions[64][64];
 void initReductionTable() {
     for (int depth = 1; depth < 64; depth++) {
         for (int movesSearched = 1; movesSearched < 64; movesSearched++)
-            lmrReductions[depth][movesSearched] = (int) (0.5 + log(depth) * log(movesSearched) / 2.1);
+            lmrReductions[depth][movesSearched] = (int) (0.5 + log(depth) * log(movesSearched) / 2.0);
     }
     // Set reductions for depth 1 and movesSearched >= 7 to 1. This only affects
     // lmrDepth-based pruning.
