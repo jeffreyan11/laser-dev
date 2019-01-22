@@ -94,8 +94,8 @@ constexpr int EG = 1;
 
 // Material constants
 constexpr int PIECE_VALUES[2][5] = {
-    {100, 405, 445, 680, 1343},
-    {135, 401, 454, 741, 1441}
+    {100, 396, 432, 685, 1362},
+    {132, 411, 457, 753, 1440}
 };
 constexpr int KNOWN_WIN = PIECE_VALUES[EG][PAWNS] * 75;
 constexpr int TB_WIN = PIECE_VALUES[EG][PAWNS] * 125;
@@ -241,21 +241,21 @@ constexpr int OWN_OPP_IMBALANCE[2][5][5] = {
 //    P   N   B   R   Q
     { 0},                   // Own pawns
     { 3,  0},               // Own knights
-    { 2, -4,  0},           // Own bishops
-    {-2, -1,-14,  0},       // Own rooks
-    { 5,-10, -3,-25,  0}    // Own queens
+    { 2, -6,  0},           // Own bishops
+    {-2, -1,-13,  0},       // Own rooks
+    { 6,-10,  0,-20,  0}    // Own queens
 },
 {
     { 0},                   // Own pawns
     { 5,  0},               // Own knights
-    { 3, -3,  0},           // Own bishops
-    { 0,-11,-14,  0},       // Own rooks
-    {17,  3,  8, 27,  0}    // Own queens
+    { 3,  0,  0},           // Own bishops
+    {-2,-16,-18,  0},       // Own rooks
+    {15,  7, 10, 30,  0}    // Own queens
 }
 };
 
 // Bonus for knight in closed positions
-constexpr int KNIGHT_CLOSED_BONUS[2] = {0, 6};
+constexpr int KNIGHT_CLOSED_BONUS[2] = {1, 7};
 
 //------------------------Positional eval constants-----------------------------
 // SPACE_BONUS[0][0] = behind own pawn, not center files
@@ -379,7 +379,7 @@ constexpr Score BISHOP_FIANCHETTO_BONUS = E(18, 0);
 // Rooks
 constexpr Score ROOK_OPEN_FILE_BONUS = E(40, 12);
 constexpr Score ROOK_SEMIOPEN_FILE_BONUS = E(21, 1);
-constexpr Score ROOK_PAWN_RANK_THREAT = E(5, 13);
+constexpr Score ROOK_PAWN_RANK_THREAT = E(4, 12);
 
 // Threats
 constexpr Score UNDEFENDED_PAWN = E(-3, -15);
@@ -408,7 +408,7 @@ constexpr Score OPP_KING_DIST = E(0, 7);
 // Doubled pawns
 constexpr Score DOUBLED_PENALTY = E(-3, -18);
 // Isolated pawns
-constexpr Score ISOLATED_PENALTY = E(-18, -12);
+constexpr Score ISOLATED_PENALTY = E(-19, -13);
 constexpr Score ISOLATED_SEMIOPEN_PENALTY = E(-3, -10);
 // Backward pawns
 constexpr Score BACKWARD_PENALTY = E(-11, -10);
