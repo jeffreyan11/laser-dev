@@ -94,8 +94,8 @@ constexpr int EG = 1;
 
 // Material constants
 constexpr int PIECE_VALUES[2][5] = {
-    {100, 408, 447, 695, 1351},
-    {135, 398, 453, 745, 1447}
+    {100, 415, 455, 716, 1375},
+    {148, 419, 466, 765, 1471}
 };
 constexpr int KNOWN_WIN = PIECE_VALUES[EG][PAWNS] * 75;
 constexpr int TB_WIN = PIECE_VALUES[EG][PAWNS] * 125;
@@ -242,15 +242,15 @@ constexpr int OWN_OPP_IMBALANCE[2][5][5] = {
     { 0},                   // Own pawns
     { 3,  0},               // Own knights
     { 2, -6,  0},           // Own bishops
-    { 0, -5,-16,  0},       // Own rooks
-    {-3,-20,-12,-26,  0}    // Own queens
+    { 0,-10,-21,  0},       // Own rooks
+    {-7,-22,-10,-46,  0}    // Own queens
 },
 {
     { 0},                   // Own pawns
-    { 5,  0},               // Own knights
-    { 3, -3,  0},           // Own bishops
-    { 3,-11,-14,  0},       // Own rooks
-    {24,  0,  8, 27,  0}    // Own queens
+    { 6,  0},               // Own knights
+    { 5,  1,  0},           // Own bishops
+    { 5,-17,-16,  0},       // Own rooks
+    {33, 24, 31, 51,  0}    // Own queens
 }
 };
 
