@@ -241,8 +241,8 @@ constexpr int OWN_OPP_IMBALANCE[2][5][5] = {
 //    P   N   B   R   Q
     { 0},                   // Own pawns
     { 2,  0},               // Own knights
-    {-1, -3,  0},           // Own bishops
-    {-5, -5,-16,  0},       // Own rooks
+    {-1,  0,  0},           // Own bishops
+    {-7,  0,-12,  0},       // Own rooks
     {11,-10, -8,-17,  0}    // Own queens
 },
 {
@@ -345,22 +345,22 @@ constexpr int PAWN_STORM_SHIELDING_KING = -139;
 // Scale factor for pieces attacking opposing king
 constexpr int KS_ARRAY_FACTOR = 128;
 constexpr int KING_THREAT_MULTIPLIER[4] = {8, 5, 7, 3};
-constexpr int KING_THREAT_SQUARE[4] = {8, 10, 7, 10};
+constexpr int KING_THREAT_SQUARE[4] = {8, 10, 6, 9};
 constexpr int KING_DEFENSELESS_SQUARE = 24;
 constexpr int KS_PAWN_FACTOR = 10;
 constexpr int KING_PRESSURE = 3;
-constexpr int KS_KING_PRESSURE_FACTOR = 24;
+constexpr int KS_KING_PRESSURE_FACTOR = 25;
 constexpr int KS_NO_KNIGHT_DEFENDER = 15;
 constexpr int KS_NO_BISHOP_DEFENDER = 15;
-constexpr int KS_BISHOP_PRESSURE = 8;
-constexpr int KS_NO_QUEEN = -44;
-constexpr int KS_BASE = -18;
+constexpr int KS_BISHOP_PRESSURE = 10;
+constexpr int KS_NO_QUEEN = -41;
+constexpr int KS_BASE = -17;
 constexpr int SAFE_CHECK_BONUS[4] = {56, 25, 65, 53};
 
 // Minor pieces
 // A penalty for each own pawn that is on a square of the same color as your bishop
-constexpr Score BISHOP_PAWN_COLOR_PENALTY = E(-8, -6);
-constexpr Score BISHOP_RAMMED_PAWN_COLOR_PENALTY = E(-3, -9);
+constexpr Score BISHOP_PAWN_COLOR_PENALTY = E(-9, -7);
+constexpr Score BISHOP_RAMMED_PAWN_COLOR_PENALTY = E(-2, -9);
 // Minors shielded by own pawn in front
 constexpr Score SHIELDED_MINOR_BONUS = E(13, 0);
 // A bonus for strong outpost knights
@@ -379,15 +379,15 @@ constexpr Score BISHOP_FIANCHETTO_BONUS = E(26, 0);
 // Rooks
 constexpr Score ROOK_OPEN_FILE_BONUS = E(37, 11);
 constexpr Score ROOK_SEMIOPEN_FILE_BONUS = E(22, 1);
-constexpr Score ROOK_PAWN_RANK_THREAT = E(7, 14);
+constexpr Score ROOK_PAWN_RANK_THREAT = E(10, 14);
 
 // Threats
 constexpr Score UNDEFENDED_PAWN = E(-1, -17);
-constexpr Score UNDEFENDED_MINOR = E(-21, -40);
-constexpr Score PAWN_PIECE_THREAT = E(-75, -31);
-constexpr Score MINOR_ROOK_THREAT = E(-71, -20);
-constexpr Score MINOR_QUEEN_THREAT = E(-71, -33);
-constexpr Score ROOK_QUEEN_THREAT = E(-78, -34);
+constexpr Score UNDEFENDED_MINOR = E(-24, -43);
+constexpr Score PAWN_PIECE_THREAT = E(-85, -31);
+constexpr Score MINOR_ROOK_THREAT = E(-81, -30);
+constexpr Score MINOR_QUEEN_THREAT = E(-81, -43);
+constexpr Score ROOK_QUEEN_THREAT = E(-88, -44);
 
 constexpr Score LOOSE_PAWN = E(-14, -2);
 constexpr Score LOOSE_MINOR = E(-15, -6);
