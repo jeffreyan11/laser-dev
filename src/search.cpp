@@ -784,7 +784,7 @@ int PVS(Board &b, int depth, int alpha, int beta, int threadID, bool isCutNode, 
         else {
             Eval e;
             ssi->staticEval = staticEval = (color == WHITE) ? e.evaluate(b) : -e.evaluate(b);
-            transpositionTable.add(b, -INFTY, NULL_MOVE, staticEval, -8, NO_NODE_INFO);
+            transpositionTable.add(b, -INFTY, NULL_MOVE, staticEval, -16, NO_NODE_INFO);
         }
     }
 
@@ -1243,7 +1243,7 @@ int quiescence(Board &b, int plies, int alpha, int beta, int threadID) {
     else {
         Eval e;
         hashEval = staticEval = (color == WHITE) ? e.evaluate(b) : -e.evaluate(b);
-        transpositionTable.add(b, -INFTY, NULL_MOVE, hashEval, -8, NO_NODE_INFO);
+        transpositionTable.add(b, -INFTY, NULL_MOVE, hashEval, -16, NO_NODE_INFO);
     }
 
     // Use the TT score as a better "static" eval, if available.
@@ -1300,7 +1300,7 @@ int quiescence(Board &b, int plies, int alpha, int beta, int threadID) {
                                 : -quiescence(copy, plies+1, -beta, -alpha, threadID);
 
         if (score >= beta) {
-            transpositionTable.add(b, adjustHashScore(score, searchParams->ply + plies), m, hashEval, -plies, CUT_NODE);
+            transpositionTable.add(b, adjustHashScore(score, searchParams->ply + plies), m, hashEval, -(plies > 0), CUT_NODE);
             return score;
         }
 
