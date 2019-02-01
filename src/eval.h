@@ -62,9 +62,9 @@ private:
 };
 
 
-constexpr int EG_FACTOR_PIECE_VALS[5] = {39, 366, 370, 676, 1572};
-constexpr int EG_FACTOR_ALPHA = 2210;
-constexpr int EG_FACTOR_BETA = 6340;
+constexpr int EG_FACTOR_PIECE_VALS[5] = {46, 372, 377, 682, 1565};
+constexpr int EG_FACTOR_ALPHA = 2150;
+constexpr int EG_FACTOR_BETA = 6320;
 constexpr int EG_FACTOR_RES = 1000;
 
 // Eval scores are packed into an unsigned 32-bit integer during calculations
