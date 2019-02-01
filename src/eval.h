@@ -309,27 +309,27 @@ constexpr int CASTLING_RIGHTS_VALUE[3] = {0, 24, 66};
 // The value of a pawn shield per pawn. First rank value is used for the
 // penalty when the pawn is missing.
 constexpr int PAWN_SHIELD_VALUE[4][8] = {
-    {-15, 23, 27, 12,  6,  7,  7,  0}, // open h file, h2, h3, ...
-    {-20, 38, 24, -8, -6, -1,  2,  0}, // g/b file
-    {-14, 39,  2, -6, -5, -3,  3,  0}, // f/c file
-    { -5, 14, 13,  8, -5,-10, -5,  0}  // d/e file
+    {-15, 22, 26, 12,  6,  7,  7,  0}, // open h file, h2, h3, ...
+    {-21, 38, 24, -8, -6, -1,  2,  0}, // g/b file
+    {-16, 39,  2, -6, -5, -3,  3,  0}, // f/c file
+    { -5, 16, 14,  8, -5,-10, -5,  0}  // d/e file
 };
 // Array for pawn storm values. Rank 1 of open is used for penalty
 // when there is no opposing pawn
 constexpr int PAWN_STORM_VALUE[3][4][8] = {
 // Open file
 {
-    {16,-24, 38, 21, 12,  0,  0,  0},
-    {14,-23, 58, 16,  7,  0,  0,  0},
-    { 6, 18, 54, 32, 18,  0,  0,  0},
-    { 9,  0, 33, 19, 14,  0,  0,  0}
+    {21,-30, 35, 22, 12,  0,  0,  0},
+    {18,-29, 58, 19,  8,  0,  0,  0},
+    { 8, 18, 52, 33, 20,  0,  0,  0},
+    {11,  0, 33, 19, 14,  0,  0,  0}
 },
 // Blocked pawn
 {
-    { 0,  0, 28,  1,  0,  0,  0,  0},
-    { 0,  0, 65,  3,  0,  0,  0,  0},
-    { 0,  0, 69,  4,  0,  0,  0,  0},
-    { 0,  0, 51,  9,  2,  0,  0,  0}
+    { 0,  0, 28, -3, -1,  0,  0,  0},
+    { 0,  0, 65, -2,  0,  0,  0,  0},
+    { 0,  0, 69,  5, -1,  0,  0,  0},
+    { 0,  0, 51, 10,  1,  0,  0,  0}
 },
 // Non-blocked pawn
 {
@@ -344,17 +344,17 @@ constexpr int PAWN_STORM_SHIELDING_KING = -135;
 
 // Scale factor for pieces attacking opposing king
 constexpr int KS_ARRAY_FACTOR = 128;
-constexpr int KING_THREAT_MULTIPLIER[4] = {8, 5, 7, 3};
-constexpr int KING_THREAT_SQUARE[4] = {8, 10, 7, 10};
-constexpr int KING_DEFENSELESS_SQUARE = 24;
-constexpr int KS_PAWN_FACTOR = 10;
+constexpr int KING_THREAT_MULTIPLIER[4] = {8, 4, 7, 3};
+constexpr int KING_THREAT_SQUARE[4] = {9, 12, 7, 10};
+constexpr int KING_DEFENSELESS_SQUARE = 22;
+constexpr int KS_PAWN_FACTOR = 12;
 constexpr int KING_PRESSURE = 3;
-constexpr int KS_KING_PRESSURE_FACTOR = 24;
+constexpr int KS_KING_PRESSURE_FACTOR = 27;
 constexpr int KS_NO_KNIGHT_DEFENDER = 15;
 constexpr int KS_NO_BISHOP_DEFENDER = 15;
-constexpr int KS_BISHOP_PRESSURE = 8;
-constexpr int KS_NO_QUEEN = -44;
-constexpr int KS_BASE = -18;
+constexpr int KS_BISHOP_PRESSURE = 10;
+constexpr int KS_NO_QUEEN = -38;
+constexpr int KS_BASE = -15;
 constexpr int SAFE_CHECK_BONUS[4] = {56, 25, 65, 53};
 
 // Minor pieces
