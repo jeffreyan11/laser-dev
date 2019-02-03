@@ -118,8 +118,13 @@ void MoveOrder::generateMoves() {
             mgStage = STAGE_QS_DONE;
             if (depth == 0) {
                 b->getPseudoLegalChecks(legalMoves, color);
-                for (unsigned int i = index; i < legalMoves.size(); i++)
-                    scores.add(ScoredMove(legalMoves.get(i), 0));
+                for (unsigned int i = index; i < legalMoves.size(); i++) {
+                    Move m = legalMoves.get(i);
+                    int startSq = getStartSq(m);
+                    int endSq = getEndSq(m);
+                    int pieceID = b->getPieceOnSquare(color, startSq);
+                    scores.add(ScoredMove(m, SCORE_QUIET_MOVE + searchParams->historyTable[color][pieceID][endSq]));
+                }
                 scoreSize = scores.size();
             }
             break;
