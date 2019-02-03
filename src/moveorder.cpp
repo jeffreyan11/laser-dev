@@ -98,7 +98,7 @@ void MoveOrder::generateMoves() {
             mgStage = STAGE_QS_PROMOTIONS;
             b->getPseudoLegalCaptures(legalMoves, color, false);
             for (unsigned int i = 0; i < legalMoves.size(); i++) {
-                scores.add(b->getMVVLVAScore(color, legalMoves.get(i)));
+                scores.add(ScoredMove(legalMoves.get(i), b->getMVVLVAScore(color, legalMoves.get(i))));
             }
             break;
 
@@ -107,7 +107,7 @@ void MoveOrder::generateMoves() {
             mgStage = STAGE_QS_CHECKS;
             b->getPseudoLegalPromotions(legalMoves, color);
             for (unsigned int i = index; i < legalMoves.size(); i++)
-                scores.add(0);
+                scores.add(ScoredMove(legalMoves.get(i), 0));
             break;
 
         // QS checks: only on the first ply of q-search. We do not sort these, so fill the scores with junk
@@ -116,7 +116,7 @@ void MoveOrder::generateMoves() {
             if (depth == 0) {
                 b->getPseudoLegalChecks(legalMoves, color);
                 for (unsigned int i = index; i < legalMoves.size(); i++)
-                    scores.add(0);
+                    scores.add(ScoredMove(legalMoves.get(i), 0));
             }
             break;
 
@@ -137,11 +137,11 @@ void MoveOrder::scoreCaptures() {
 
         int adjustedMVVLVA = 8 * b->getMVVLVAScore(color, m) / (4 + depth);
         if (b->isSEEAbove(color, m, 1))
-            scores.add(SCORE_WINNING_CAPTURE + adjustedMVVLVA + searchParams->captureHistory[color][pieceID][capturedID][endSq]);
+            scores.add(ScoredMove(m, SCORE_WINNING_CAPTURE + adjustedMVVLVA + searchParams->captureHistory[color][pieceID][capturedID][endSq]));
         else if (b->isSEEAbove(color, m, 0))
-            scores.add(SCORE_EVEN_CAPTURE + adjustedMVVLVA + searchParams->captureHistory[color][pieceID][capturedID][endSq]);
+            scores.add(ScoredMove(m, SCORE_EVEN_CAPTURE + adjustedMVVLVA + searchParams->captureHistory[color][pieceID][capturedID][endSq]));
         else
-            scores.add(SCORE_LOSING_CAPTURE + adjustedMVVLVA + searchParams->captureHistory[color][pieceID][capturedID][endSq]);
+            scores.add(ScoredMove(m, SCORE_LOSING_CAPTURE + adjustedMVVLVA + searchParams->captureHistory[color][pieceID][capturedID][endSq]));
     }
 }
 
@@ -151,11 +151,11 @@ void MoveOrder::scoreQuiets() {
 
         // Score killers below even captures but above losing captures
         if (m == searchParams->killers[ssi->ply][0])
-            scores.add(SCORE_EVEN_CAPTURE - 1);
+            scores.add(ScoredMove(m, SCORE_EVEN_CAPTURE - 1));
 
         // Order queen promotions somewhat high
         else if (getPromotion(m) == QUEENS)
-            scores.add(SCORE_QUEEN_PROMO);
+            scores.add(ScoredMove(m, SCORE_QUEEN_PROMO));
 
         // Sort all other quiet moves by history
         else {
@@ -163,10 +163,10 @@ void MoveOrder::scoreQuiets() {
             int endSq = getEndSq(m);
             int pieceID = b->getPieceOnSquare(color, startSq);
 
-            scores.add(SCORE_QUIET_MOVE
+            scores.add(ScoredMove(m, SCORE_QUIET_MOVE
                 + searchParams->historyTable[color][pieceID][endSq]
                 + ((ssi->counterMoveHistory != nullptr) ? ssi->counterMoveHistory[pieceID][endSq] : 0)
-                + ((ssi->followupMoveHistory != nullptr) ? ssi->followupMoveHistory[pieceID][endSq] : 0));
+                + ((ssi->followupMoveHistory != nullptr) ? ssi->followupMoveHistory[pieceID][endSq] : 0)));
         }
     }
 }
@@ -191,7 +191,7 @@ Move MoveOrder::nextMove() {
 
     // Find the index of the next best move
     int bestIndex = index;
-    int bestScore = scores.get(index);
+    ScoredMove bestScore = scores.get(index);
     for (unsigned int i = index + 1; i < scores.size(); i++) {
         if (scores.get(i) > bestScore) {
             bestIndex = i;
@@ -200,15 +200,14 @@ Move MoveOrder::nextMove() {
     }
 
     // Swap the best move to the correct position
-    legalMoves.swap(bestIndex, index);
     scores.swap(bestIndex, index);
 
     // Once we've gotten to even captures, we need to generate quiets since
     // some quiets (killers, promotions) should be searched first.
-    if (mgStage == STAGE_CAPTURES && bestScore < SCORE_WINNING_CAPTURE)
+    if (mgStage == STAGE_CAPTURES && bestScore.score < SCORE_WINNING_CAPTURE)
         generateMoves();
 
-    return legalMoves.get(index++);
+    return scores.get(index++).m;
 }
 
 // When a PV or cut move is found, the history of the best move in increased,
@@ -241,14 +240,14 @@ void MoveOrder::updateHistories(Move bestMove) {
     if (index <= 0)
         return;
     for (unsigned int i = 0; i < index-1; i++) {
-        if (legalMoves.get(i) == bestMove)
+        if (scores.get(i).m == bestMove)
             break;
 
-        startSq = getStartSq(legalMoves.get(i));
-        endSq = getEndSq(legalMoves.get(i));
+        startSq = getStartSq(scores.get(i).m);
+        endSq = getEndSq(scores.get(i).m);
         pieceID = b->getPieceOnSquare(color, startSq);
 
-        if (isCapture(legalMoves.get(i))) {
+        if (isCapture(scores.get(i).m)) {
             int capturedID = b->getPieceOnSquare(color, endSq);
             if (capturedID == -1) capturedID = 0;
 
@@ -293,13 +292,13 @@ void MoveOrder::updateCaptureHistories(Move bestMove) {
     if (index <= 0)
         return;
     for (unsigned int i = 0; i < index-1; i++) {
-        if (legalMoves.get(i) == bestMove)
+        if (scores.get(i).m == bestMove)
             break;
-        if (!isCapture(legalMoves.get(i)))
+        if (!isCapture(scores.get(i).m))
             continue;
 
-        startSq = getStartSq(legalMoves.get(i));
-        endSq = getEndSq(legalMoves.get(i));
+        startSq = getStartSq(scores.get(i).m);
+        endSq = getEndSq(scores.get(i).m);
         pieceID = b->getPieceOnSquare(color, startSq);
         capturedID = b->getPieceOnSquare(color, endSq);
         if (capturedID == -1) capturedID = 0;
