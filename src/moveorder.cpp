@@ -202,7 +202,7 @@ Move MoveOrder::nextMove() {
 
     // Delay losing captures until after quiets have been searched
     if (mgStage == STAGE_CAPTURES && isCapture(scores.get(bestIndex).m)) {
-        if (!b->isSEEAbove(color, scores.get(bestIndex).m, 0)) {
+        if (!b->isSEEAbove(color, scores.get(bestIndex).m, -2 * depth * depth)) {
             scoreSize--;
             scores.swap(bestIndex, scoreSize);
             return nextMove();
