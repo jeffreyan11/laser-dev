@@ -40,12 +40,12 @@ struct ScoredMove {
     }
 };
 
-inline bool operator==(const ScoredMove& lhs, const ScoredMove& rhs) { return lhs.score == rhs.score; }
-inline bool operator!=(const ScoredMove& lhs, const ScoredMove& rhs) { return !operator==(lhs,rhs); }
-inline bool operator< (const ScoredMove& lhs, const ScoredMove& rhs) { return lhs.score < rhs.score; }
-inline bool operator> (const ScoredMove& lhs, const ScoredMove& rhs) { return  operator< (rhs,lhs); }
-inline bool operator<=(const ScoredMove& lhs, const ScoredMove& rhs) { return !operator> (lhs,rhs); }
-inline bool operator>=(const ScoredMove& lhs, const ScoredMove& rhs) { return !operator< (lhs,rhs); }
+inline bool operator==(const ScoredMove &lhs, const ScoredMove &rhs) { return lhs.score == rhs.score; }
+inline bool operator!=(const ScoredMove &lhs, const ScoredMove &rhs) { return !operator==(lhs,rhs); }
+inline bool operator< (const ScoredMove &lhs, const ScoredMove &rhs) { return lhs.score < rhs.score; }
+inline bool operator> (const ScoredMove &lhs, const ScoredMove &rhs) { return  operator< (rhs,lhs); }
+inline bool operator<=(const ScoredMove &lhs, const ScoredMove &rhs) { return !operator> (lhs,rhs); }
+inline bool operator>=(const ScoredMove &lhs, const ScoredMove &rhs) { return !operator< (lhs,rhs); }
 
 struct MoveOrder {
     Board *b;
@@ -57,6 +57,7 @@ struct MoveOrder {
     Move hashed;
     MoveList legalMoves;
     SearchArrayList<ScoredMove> scores;
+    unsigned int scoreSize;
     unsigned int quietStart;
     unsigned int index;
 
