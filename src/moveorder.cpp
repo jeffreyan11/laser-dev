@@ -19,11 +19,10 @@
 #include "search.h"
 #include "moveorder.h"
 
-constexpr int16_t SCORE_IID_MOVE = (1 << 13);
 constexpr int16_t SCORE_WINNING_CAPTURE = (1 << 12);
 constexpr int16_t SCORE_QUEEN_PROMO = (1 << 11);
 constexpr int16_t SCORE_QUIET_MOVE = -(1 << 12);
-constexpr int16_t SCORE_LOSING_CAPTURE = -(1 << 14);
+constexpr int16_t SCORE_LOSING_CAPTURE = -(1 << 12) - (1 << 11);
 
 
 MoveOrder::MoveOrder(Board *_b, int _color, int _depth, SearchParameters *_searchParams,
@@ -202,7 +201,7 @@ Move MoveOrder::nextMove() {
 
     // Delay losing captures until after quiets have been searched
     if (mgStage == STAGE_CAPTURES && isCapture(scores.get(bestIndex).m)) {
-        if (!b->isSEEAbove(color, scores.get(bestIndex).m, -2 * depth * depth)) {
+        if (!b->isSEEAbove(color, scores.get(bestIndex).m, -depth * depth)) {
             scoreSize--;
             scores.swap(bestIndex, scoreSize);
             return nextMove();
