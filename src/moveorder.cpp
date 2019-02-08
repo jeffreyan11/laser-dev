@@ -27,7 +27,7 @@ constexpr int16_t SCORE_LOSING_CAPTURE = -(1 << 14);
 
 
 MoveOrder::MoveOrder(Board *_b, int _color, int _depth, SearchParameters *_searchParams,
-    SearchStackInfo *_ssi, Move _hashed, MoveList _legalMoves) {
+    SearchStackInfo *_ssi, Move _hashed, Move _counterMove, MoveList _legalMoves) {
 	b = _b;
 	color = _color;
 	depth = _depth;
@@ -38,6 +38,7 @@ MoveOrder::MoveOrder(Board *_b, int _color, int _depth, SearchParameters *_searc
     quietStart = 0;
     index = 0;
     hashed = _hashed;
+    counterMove = _counterMove;
     legalMoves = _legalMoves;
 }
 
@@ -52,6 +53,7 @@ MoveOrder::MoveOrder(Board *_b, int _color, int _depth, SearchParameters *_searc
     quietStart = 0;
     index = 0;
     hashed = NULL_MOVE;
+    counterMove = NULL_MOVE;
 }
 
 // Returns true if there are still moves remaining, false if we have
@@ -153,6 +155,8 @@ void MoveOrder::scoreQuiets() {
         if (m == searchParams->killers[ssi->ply][0])
             scores.add(ScoredMove(m, SCORE_QUEEN_PROMO - 1));
         else if (m == searchParams->killers[ssi->ply][1])
+            scores.add(ScoredMove(m, SCORE_QUEEN_PROMO - 3));
+        else if (m == counterMove)
             scores.add(ScoredMove(m, SCORE_QUEEN_PROMO - 2));
 
         // Order queen promotions somewhat high

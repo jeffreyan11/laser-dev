@@ -55,6 +55,7 @@ struct MoveOrder {
     SearchStackInfo *ssi;
     MoveGenStage mgStage;
     Move hashed;
+    Move counterMove;
     MoveList legalMoves;
     SearchArrayList<ScoredMove> scores;
     unsigned int scoreSize;
@@ -62,7 +63,7 @@ struct MoveOrder {
     unsigned int index;
 
     MoveOrder(Board *_b, int _color, int _depth, SearchParameters *_searchParams,
-        SearchStackInfo *_ssi, Move _hashed, MoveList _legalMoves);
+        SearchStackInfo *_ssi, Move _hashed, Move _counterMove, MoveList _legalMoves);
     // Overloaded constructor for quiescence search
     MoveOrder(Board *_b, int _color, int _depth, SearchParameters *_searchParams);
 

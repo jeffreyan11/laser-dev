@@ -25,6 +25,7 @@ struct SearchParameters {
     int ply;
     int selectiveDepth;
     Move killers[MAX_DEPTH+1][2];
+    Move counterMoveTable[2][6][64];
     int historyTable[2][6][64];
     int captureHistory[2][6][6][64];
     int **counterMoveHistory[6][64];
@@ -79,6 +80,13 @@ struct SearchParameters {
     }
 
     void resetHistoryTable() {
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 6; j++) {
+                for (int k = 0; k < 64; k++)
+                    counterMoveTable[i][j][k] = NULL_MOVE;
+            }
+        }
+
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 6; j++) {
                 for (int k = 0; k < 64; k++)

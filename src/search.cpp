@@ -71,8 +71,10 @@ struct ThreadMemory {
     TwoFoldStack twoFoldPositions;
 
     ThreadMemory() {
-        for (int i = 0; i < 129; i++)
+        for (int i = 0; i < 129; i++) {
             ssInfo[i].ply = i;
+            ssInfo[i].counterMove = nullptr;
+        }
     }
 
     ~ThreadMemory() = default;
@@ -580,6 +582,7 @@ void getBestMoveAtDepth(const Board *b, const MoveList *legalMoves, int depth, i
         int startSq = getStartSq(m);
         int endSq = getEndSq(m);
         int pieceID = b->getPieceOnSquare(color, startSq);
+        (ssi+1)->counterMove = &(searchParams->counterMoveTable[color][pieceID][endSq]);
         (ssi+1)->counterMoveHistory = searchParams->counterMoveHistory[pieceID][endSq];
         (ssi+1)->followupMoveHistory = nullptr;
         (ssi+2)->followupMoveHistory = searchParams->followupMoveHistory[pieceID][endSq];
@@ -848,6 +851,7 @@ int PVS(Board &b, int depth, int alpha, int beta, int threadID, bool isCutNode, 
 
         uint16_t epCaptureFile = b.getEPCaptureFile();
         b.doNullMove();
+        (ssi+1)->counterMove = nullptr;
         (ssi+1)->counterMoveHistory = nullptr;
         (ssi+2)->followupMoveHistory = nullptr;
         int nullScore = -PVS(b, depth-1-reduction, -beta, -alpha, threadID, !isCutNode, ssi+1, &line);
@@ -896,7 +900,8 @@ int PVS(Board &b, int depth, int alpha, int beta, int threadID, bool isCutNode, 
     else
         b.getAllPseudoLegalMoves(legalMoves, color);
     // Initialize the module for move ordering
-    MoveOrder moveSorter(&b, color, depth, searchParams, ssi, hashed, legalMoves);
+    Move counterMove = (ssi->counterMove != nullptr) ? *ssi->counterMove : NULL_MOVE;
+    MoveOrder moveSorter(&b, color, depth, searchParams, ssi, hashed, counterMove, legalMoves);
     moveSorter.generateMoves();
 
     // Keeps track of the best move for storing into the TT
@@ -1056,10 +1061,11 @@ int PVS(Board &b, int depth, int alpha, int beta, int threadID, bool isCutNode, 
                 if (!seCopy.doPseudoLegalMove(seMove, color))
                     continue;
 
-                (ssi+1)->counterMoveHistory = searchParams->counterMoveHistory
-                    [b.getPieceOnSquare(color, getStartSq(seMove))][getEndSq(seMove)];
-                (ssi+2)->followupMoveHistory = searchParams->followupMoveHistory
-                    [b.getPieceOnSquare(color, getStartSq(seMove))][getEndSq(seMove)];
+                int seEndSq = getEndSq(seMove);
+                int sePieceID = b.getPieceOnSquare(color, getStartSq(seMove));
+                (ssi+1)->counterMove = &(searchParams->counterMoveTable[color][sePieceID][seEndSq]);
+                (ssi+1)->counterMoveHistory = searchParams->counterMoveHistory[sePieceID][seEndSq];
+                (ssi+2)->followupMoveHistory = searchParams->followupMoveHistory[sePieceID][seEndSq];
 
                 // The window is lowered more for higher depths
                 int SEWindow = hashScore - depth;
@@ -1085,6 +1091,7 @@ int PVS(Board &b, int depth, int alpha, int beta, int threadID, bool isCutNode, 
         }
 
 
+        (ssi+1)->counterMove = &(searchParams->counterMoveTable[color][pieceID][endSq]);
         (ssi+1)->counterMoveHistory = searchParams->counterMoveHistory[pieceID][endSq];
         (ssi+2)->followupMoveHistory = searchParams->followupMoveHistory[pieceID][endSq];
 
@@ -1124,9 +1131,10 @@ int PVS(Board &b, int depth, int alpha, int beta, int threadID, bool isCutNode, 
             if (!isCapture(m)) {
                 // Ensure the same killer does not fill both slots
                 if (m != searchParams->killers[ssi->ply][0]) {
-                    searchParams->killers[ssi->ply][1] =
-                        searchParams->killers[ssi->ply][0];
+                    searchParams->killers[ssi->ply][1] = searchParams->killers[ssi->ply][0];
                     searchParams->killers[ssi->ply][0] = m;
+                    if (ssi->counterMove != nullptr)
+                        *ssi->counterMove = m;
                 }
                 moveSorter.updateHistories(m);
             }

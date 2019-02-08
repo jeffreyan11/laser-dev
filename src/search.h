@@ -84,6 +84,7 @@ public:
 struct SearchStackInfo {
     int ply;
     int staticEval;
+    Move *counterMove;
     int **counterMoveHistory;
     int **followupMoveHistory;
 };
