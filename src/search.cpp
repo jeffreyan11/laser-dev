@@ -903,10 +903,15 @@ int PVS(Board &b, int depth, int alpha, int beta, int threadID, bool isCutNode, 
             (ssi+1)->counterMoveHistory = searchParams->counterMoveHistory[b.getPieceOnSquare(color, getStartSq(m))][getEndSq(m)];
             (ssi+2)->followupMoveHistory = searchParams->followupMoveHistory[b.getPieceOnSquare(color, getStartSq(m))][getEndSq(m)];
 
-            int score = -PVS(copy, depth - depth/4 - 4, -probCutMargin, -probCutMargin+1, threadID, !isCutNode, ssi+1, &line);
+            // Verify the fail high first with a qsearch
+            int score = -quiescence(copy, 0, -probCutMargin, -probCutMargin+1, threadID);
 
-            if (score >= probCutMargin)
-                return score;
+            if (score >= probCutMargin) {
+                score = -PVS(copy, depth - depth/4 - 4, -probCutMargin, -probCutMargin+1, threadID, !isCutNode, ssi+1, &line);
+
+                if (score >= probCutMargin)
+                    return score;
+            }
         }
     }
 
