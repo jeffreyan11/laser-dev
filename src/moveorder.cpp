@@ -40,22 +40,14 @@ MoveOrder::MoveOrder(Board *_b, int _color, int _depth, SearchParameters *_searc
     hashed = _hashed;
     legalMoves = _legalMoves;
     captureMargin = 0;
+    isProbCut = false;
 }
 
 MoveOrder::MoveOrder(Board *_b, int _color, int _depth, SearchParameters *_searchParams,
-    SearchStackInfo *_ssi, Move _hashed, MoveList _legalMoves, int _captureMargin) {
-    b = _b;
-    color = _color;
-    depth = _depth;
-    searchParams = _searchParams;
-    ssi = _ssi;
-    mgStage = STAGE_NONE;
-    scoreSize = 0;
-    quietStart = 0;
-    index = 0;
-    hashed = _hashed;
-    legalMoves = _legalMoves;
+    SearchStackInfo *_ssi, Move _hashed, MoveList _legalMoves, int _captureMargin)
+    : MoveOrder(_b, _color, _depth, _searchParams, _ssi, _hashed, _legalMoves) {
     captureMargin = _captureMargin;
+    isProbCut = true;
 }
 
 MoveOrder::MoveOrder(Board *_b, int _color, int _depth, SearchParameters *_searchParams) {
@@ -69,6 +61,7 @@ MoveOrder::MoveOrder(Board *_b, int _color, int _depth, SearchParameters *_searc
     quietStart = 0;
     index = 0;
     hashed = NULL_MOVE;
+    isProbCut = false;
 }
 
 // Returns true if there are still moves remaining, false if we have
@@ -202,11 +195,10 @@ Move MoveOrder::nextMove() {
     // If we are the end of our generated list, generate more.
     // If there are no moves left, return NULL_MOVE to indicate so.
     while (index >= scoreSize) {
-        if (mgStage == STAGE_QUIETS || mgStage == STAGE_QS_DONE)
+        if (mgStage == STAGE_QUIETS || mgStage == STAGE_QS_DONE || isProbCut)
             return NULL_MOVE;
-        else {
+        else
             generateMoves();
-        }
     }
 
     // Find the index of the next best move

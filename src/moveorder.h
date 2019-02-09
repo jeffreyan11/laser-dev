@@ -61,9 +61,11 @@ struct MoveOrder {
     unsigned int quietStart;
     unsigned int index;
     int captureMargin;
+    bool isProbCut;
 
     MoveOrder(Board *_b, int _color, int _depth, SearchParameters *_searchParams,
         SearchStackInfo *_ssi, Move _hashed, MoveList _legalMoves);
+    // Overloaded constructor for probcut search
     MoveOrder(Board *_b, int _color, int _depth, SearchParameters *_searchParams,
         SearchStackInfo *_ssi, Move _hashed, MoveList _legalMoves, int _captureMargin);
     // Overloaded constructor for quiescence search

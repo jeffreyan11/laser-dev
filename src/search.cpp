@@ -890,7 +890,7 @@ int PVS(Board &b, int depth, int alpha, int beta, int threadID, bool isCutNode, 
         MoveOrder moveSorter(&b, color, depth, searchParams, ssi, NULL_MOVE, legalMoves, probCutMargin - staticEval);
         moveSorter.generateMoves();
 
-        for (Move m = moveSorter.nextMove(); m != NULL_MOVE && probCutCount < 3 && isCapture(m);
+        for (Move m = moveSorter.nextMove(); m != NULL_MOVE && probCutCount < 3;
                   m = moveSorter.nextMove()) {
             probCutCount++;
             Board copy = b.staticCopy();
