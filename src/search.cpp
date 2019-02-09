@@ -883,9 +883,9 @@ int PVS(Board &b, int depth, int alpha, int beta, int threadID, bool isCutNode, 
     // well, and return early.
     // Idea from Stockfish
     if (!isPVNode && !isInCheck
-     && depth >= 5
+     && depth >= 6 && staticEval >= beta - 100 - 20 * depth
      && abs(beta) < MAX_PLY_MATE_SCORE) {
-        int probCutMargin = beta + 100;
+        int probCutMargin = beta + 90;
         int probCutCount = 0;
         MoveOrder moveSorter(&b, color, depth, searchParams, ssi, NULL_MOVE, legalMoves, probCutMargin - staticEval);
         moveSorter.generateMoves();
@@ -903,7 +903,7 @@ int PVS(Board &b, int depth, int alpha, int beta, int threadID, bool isCutNode, 
             (ssi+1)->counterMoveHistory = searchParams->counterMoveHistory[b.getPieceOnSquare(color, getStartSq(m))][getEndSq(m)];
             (ssi+2)->followupMoveHistory = searchParams->followupMoveHistory[b.getPieceOnSquare(color, getStartSq(m))][getEndSq(m)];
 
-            int score = -PVS(copy, depth-4, -probCutMargin, -probCutMargin+1, threadID, !isCutNode, ssi+1, &line);
+            int score = -PVS(copy, depth - depth/4 - 4, -probCutMargin, -probCutMargin+1, threadID, !isCutNode, ssi+1, &line);
 
             if (score >= probCutMargin)
                 return score;
