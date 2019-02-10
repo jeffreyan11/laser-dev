@@ -886,13 +886,11 @@ int PVS(Board &b, int depth, int alpha, int beta, int threadID, bool isCutNode, 
      && depth >= 6 && staticEval >= beta - 100 - 20 * depth
      && abs(beta) < MAX_PLY_MATE_SCORE) {
         int probCutMargin = beta + 90;
-        int probCutCount = 0;
         MoveOrder moveSorter(&b, color, depth, searchParams, ssi, NULL_MOVE, legalMoves, probCutMargin - staticEval);
         moveSorter.generateMoves();
 
-        for (Move m = moveSorter.nextMove(); m != NULL_MOVE && probCutCount < 3 && isCapture(m);
+        for (Move m = moveSorter.nextMove(); m != NULL_MOVE && isCapture(m);
                   m = moveSorter.nextMove()) {
-            probCutCount++;
             Board copy = b.staticCopy();
             // Search every move except the hash move
             if (m == hashed)
