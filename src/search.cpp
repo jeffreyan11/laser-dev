@@ -486,8 +486,11 @@ void getBestMove(const Board *b, TimeManagement *timeParams, MoveList legalMoves
         }
 
         // Adjust search time based on PV and score behavior
-        if (threadID == 0 && timeParams->searchMode == TIME)
-            timeChangeFactor *= 0.92 + std::min(7.0, sqrt(abs(prevScore - bestScore))) / 25.0;
+        if (threadID == 0 && timeParams->searchMode == TIME) {
+            double highScoreVolatility = 1.0 - std::min(200, abs(bestScore)) / 500.0;
+            double scoreChange = std::min(6.0, sqrt(abs(prevScore - bestScore) * highScoreVolatility));
+            timeChangeFactor *= 0.94 + scoreChange / 20.0;
+        }
         else
             timeChangeFactor = 1.0;
 
