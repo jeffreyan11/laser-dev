@@ -352,7 +352,7 @@ int Eval::evaluate(Board &b) {
     uint64_t whiteSpace = pieces[WHITE][PAWNS] >> 8;
     whiteSpace |= whiteSpace >> 8;
     whiteSpace |= whiteSpace >> 16;
-    whiteSpace &= ~ei.attackMaps[BLACK][PAWNS] & ~allPawns;
+    whiteSpace &= whiteSafeSpace & ~allPawns;
     uint64_t whiteSpace2 = pieces[BLACK][PAWNS] >> 8;
     whiteSpace2 |= whiteSpace2 >> 8;
     whiteSpace2 |= whiteSpace2 >> 16;
@@ -367,7 +367,7 @@ int Eval::evaluate(Board &b) {
     uint64_t blackSpace = pieces[BLACK][PAWNS] << 8;
     blackSpace |= blackSpace << 8;
     blackSpace |= blackSpace << 16;
-    blackSpace &= ~ei.attackMaps[WHITE][PAWNS] & ~allPawns;
+    blackSpace &= blackSafeSpace & ~allPawns;
     uint64_t blackSpace2 = pieces[WHITE][PAWNS] << 8;
     blackSpace2 |= blackSpace2 << 8;
     blackSpace2 |= blackSpace2 << 16;
