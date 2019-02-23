@@ -262,7 +262,7 @@ constexpr int KNIGHT_CLOSED_BONUS[2] = {2, 7};
 // SPACE_BONUS[0][1] = behind own pawn, center files
 // SPACE_BONUS[1][0] = in front of opp pawn, not center files
 // SPACE_BONUS[1][1] = in front of opp pawn, center files
-constexpr int SPACE_BONUS[2][2] = {{16, 39}, {1, 14}};
+constexpr int SPACE_BONUS[2][2] = {{16, 38}, {3, 16}};
 
 // Mobility tables
 constexpr int mobilityTable[2][5][28] = {
