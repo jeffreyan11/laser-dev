@@ -344,10 +344,10 @@ int Eval::evaluate(Board &b) {
     int whiteSpaceWeight = std::max(0, count(allPieces[WHITE]) - openFileCount);
     int blackSpaceWeight = std::max(0, count(allPieces[BLACK]) - openFileCount);
 
-    // Consider two definitions of space, valuing the center 4 files higher:
-    //  1. Up to 3 squares behind a friendly pawn, not occupied by a pawn or attacked by an opposing pawn
-    //  2. Up to 3 squares in front of an enemy pawn, not occupied by a pawn,
-    //     excluding squares attacked by an opposing pawn or attacked by two opposing pieces and not doubly defended
+    // Consider two definitions of space, valuing the center 4 files higher, and excluding squares occupied by a pawn,
+    // attacked by an opposing pawn, or attacked by two opposing pieces and not doubly defended
+    //  1. Up to 3 squares behind a friendly pawn
+    //  2. Up to 3 squares in front of an enemy pawn
     uint64_t whiteSafeSpace = ~(ei.attackMaps[BLACK][PAWNS] | (ei.doubleAttackMaps[BLACK] & ~ei.doubleAttackMaps[WHITE]));
     uint64_t whiteSpace = pieces[WHITE][PAWNS] >> 8;
     whiteSpace |= whiteSpace >> 8;
