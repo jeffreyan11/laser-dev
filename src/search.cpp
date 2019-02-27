@@ -426,7 +426,7 @@ void getBestMove(const Board *b, TimeManagement *timeParams, MoveList legalMoves
                     int capturedID = b->getPieceOnSquare(color, endSq);
                     if (capturedID == -1) capturedID = 0;
 
-                    int adjustedMVVLVA = 8 * b->getMVVLVAScore(color, m) / (4 + rootDepth);
+                    int adjustedMVVLVA = 5 * b->getMVVLVAScore(color, m) / (3 + rootDepth);
                     scores.add(16384 + adjustedMVVLVA
                         + threadMemoryArray[threadID]->searchParams.captureHistory[color][pieceID][capturedID][endSq]);
                 }

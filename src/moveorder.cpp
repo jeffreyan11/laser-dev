@@ -156,7 +156,7 @@ void MoveOrder::scoreCaptures() {
         int capturedID = b->getPieceOnSquare(color, endSq);
         if (capturedID == -1) capturedID = 0;
 
-        int adjustedMVVLVA = 8 * b->getMVVLVAScore(color, m) / (4 + depth);
+        int adjustedMVVLVA = 5 * b->getMVVLVAScore(color, m) / (3 + depth);
         scores.add(ScoredMove(m, SCORE_LOSING_CAPTURE + adjustedMVVLVA + searchParams->captureHistory[color][pieceID][capturedID][endSq]));
     }
     scoreSize = scores.size();
