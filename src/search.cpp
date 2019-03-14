@@ -1019,10 +1019,8 @@ int PVS(Board &b, int depth, int alpha, int beta, int threadID, bool isCutNode, 
             if (!copy.doHashMove(m, color)) {
                 hashed = NULL_MOVE;
                 moveSorter.hashed = NULL_MOVE;
-                moveSorter.generateMoves();
                 continue;
             }
-            moveSorter.generateMoves();
         }
         else if (!copy.doPseudoLegalMove(m, color))
             continue;

@@ -196,8 +196,10 @@ void MoveOrder::scoreQuiets() {
 // if an early cutoff occurs.
 Move MoveOrder::nextMove() {
     // Special case when we have a hash move available
-    if (mgStage == STAGE_HASH_MOVE)
+    if (mgStage == STAGE_HASH_MOVE) {
+        generateMoves();
         return hashed;
+    }
 
     // If we are the end of our generated list, generate more.
     // If there are no moves left, return NULL_MOVE to indicate so.
